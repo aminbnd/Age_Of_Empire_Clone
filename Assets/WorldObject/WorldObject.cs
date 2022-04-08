@@ -41,9 +41,16 @@ public class WorldObject : MonoBehaviour
 	}
 
 	/*** Public methods ***/
+	public virtual void SetHoverState(GameObject hoverObject)
+	{
+		//only handle input if owned by a human player and currently selected
+		if (player && player.human && currentlySelected)
+		{
+			if (hoverObject.name != "Ground") player.hud.SetCursorState(CursorState.Select);
+		}
+	}
 
-	
-		public void SetSelection(bool selected, Rect playingArea)
+	public void SetSelection(bool selected, Rect playingArea)
 		{
 			currentlySelected = selected;
 			if (selected) this.playingArea = playingArea;

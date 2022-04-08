@@ -73,30 +73,61 @@ public class UserInput : MonoBehaviour
 
         }
     }
+    private void MouseHover()
+    {
+        if (player.hud.MouseInBounds())
+        {
+            GameObject hoverObject = FindHitObject();
+            if (hoverObject)
+            {
+                if (player.SelectedObject) player.SelectedObject.SetHoverState(hoverObject);
+                else if (hoverObject.name != "Ground")
+                {
+                    Player owner = hoverObject.transform.root.GetComponent<Player>();
+                    if (owner)
+                    {
+                        Unit unit = hoverObject.transform.parent.GetComponent<Unit>();
+                        Building building = hoverObject.transform.parent.GetComponent<Building>();
+                        if (owner.username == player.username && (unit || building)) player.hud.SetCursorState(CursorState.Select);
+                    }
+                }
+            }
+        }
+    }
     private void MoveCamera()
     {
         float xpos = Input.mousePosition.x;
         float ypos = Input.mousePosition.y;
         Vector3 movement = new Vector3(0, 0, 0);
+        bool mouseScroll = false;
+
 
         //horizontal camera movement
-        if (xpos >= 0 && xpos < ResourceManager.ScrollWidth)
+        if (xpos >= 0 && xpos < ResourceManager.ScrollWidth || Input.GetKey("left"))
         {
             movement.x -= ResourceManager.ScrollSpeed;
+            player.hud.SetCursorState(CursorState.PanLeft);
+            mouseScroll = true;
         }
-        else if (xpos <= Screen.width && xpos > Screen.width - ResourceManager.ScrollWidth)
+        else if (xpos <= Screen.width && xpos > Screen.width - ResourceManager.ScrollWidth || Input.GetKey("right"))
         {
             movement.x += ResourceManager.ScrollSpeed;
+            player.hud.SetCursorState(CursorState.PanRight);
+            mouseScroll = true;
         }
 
         //vertical camera movement
-        if (ypos >= 0 && ypos < ResourceManager.ScrollWidth)
+        if (ypos >= 0 && ypos < ResourceManager.ScrollWidth || Input.GetKey("down"))
         {
             movement.z -= ResourceManager.ScrollSpeed;
+            player.hud.SetCursorState(CursorState.PanDown);
+            mouseScroll = true;
         }
-        else if (ypos <= Screen.height && ypos > Screen.height - ResourceManager.ScrollWidth)
+        else if (ypos <= Screen.height && ypos > Screen.height - ResourceManager.ScrollWidth || Input.GetKey("up"))
         {
             movement.z += ResourceManager.ScrollSpeed;
+            player.hud.SetCursorState(CursorState.PanUp);
+            mouseScroll = true;
         }
 
         //make sure movement is in the direction the camera is pointing
@@ -129,6 +160,10 @@ public class UserInput : MonoBehaviour
         {
             Camera.main.transform.position = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.ScrollSpeed);
         }
+        if (!mouseScroll)
+        {
+            player.hud.SetCursorState(CursorState.Select);
+        }
     }
 
     private void RotateCamera()
@@ -141,12 +176,18 @@ public class UserInput : MonoBehaviour
         {
             destination.x -= Input.GetAxis("Mouse Y") * ResourceManager.RotateAmount;
             destination.y += Input.GetAxis("Mouse X") * ResourceManager.RotateAmount;
+            //Debug.Log(Input.GetAxis("Mouse Y"));
+
+
         }
 
         //if a change in position is detected perform the necessary update
         if (destination != origin)
         {
+
             Camera.main.transform.eulerAngles = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.RotateSpeed);
+
+
         }
     }
 }
