@@ -31,7 +31,6 @@ public class WorldObject : MonoBehaviour
 	}
 	protected virtual void Update()
 	{
-
 	}
 
 	protected virtual void OnGUI()
@@ -46,7 +45,7 @@ public class WorldObject : MonoBehaviour
 		//only handle input if owned by a human player and currently selected
 		if (player && player.human && currentlySelected)
 		{
-			if (hoverObject.name != "Ground") player.hud.SetCursorState(CursorState.Select);
+			if (hoverObject.transform.parent.name != "Ground") player.hud.SetCursorState(CursorState.Select);
 		}
 	}
 
@@ -70,9 +69,9 @@ public class WorldObject : MonoBehaviour
 	public virtual void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller)
 	{
 		//only handle input if currently selected
-		if (currentlySelected && hitObject && hitObject.name != "Ground")
+		if (currentlySelected && hitObject && hitObject.transform.parent.name != "Ground")
 		{
-			WorldObject worldObject = hitObject.transform.root.GetComponent<WorldObject>();
+			WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
 			//clicked on another selectable object
 			if (worldObject) ChangeSelection(worldObject, controller);
 		}
@@ -83,6 +82,7 @@ public class WorldObject : MonoBehaviour
 		selectionBounds = new Bounds(transform.position, Vector3.zero);
 		foreach (Renderer r in GetComponentsInChildren<Renderer>())
 		{
+			Debug.Log(r);
 			selectionBounds.Encapsulate(r.bounds);
 		}
 	}
