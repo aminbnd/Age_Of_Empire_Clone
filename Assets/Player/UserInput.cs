@@ -16,12 +16,7 @@ public class UserInput : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-
-            return hit.me;
-
-        }
+        if (Physics.Raycast(ray, out hit)) return hit.collider.gameObject;
         return null;
     }
     private Vector3 FindHitPoint()
