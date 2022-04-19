@@ -82,7 +82,6 @@ public class WorldObject : MonoBehaviour
 		selectionBounds = new Bounds(transform.position, Vector3.zero);
 		foreach (Renderer r in GetComponentsInChildren<Renderer>())
 		{
-			Debug.Log(r);
 			selectionBounds.Encapsulate(r.bounds);
 		}
 	}

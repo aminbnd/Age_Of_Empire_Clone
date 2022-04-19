@@ -58,7 +58,7 @@ public class Unit : WorldObject
 			{
 				float x = hitPoint.x;
 				//makes sure that the unit stays on top of the surface it is on
-				float y = hitPoint.y  + player.SelectedObject.transform.position.y;
+				float y = hitPoint.y;
 				float z = hitPoint.z;
 				Vector3 destination = new Vector3(x, y, z);
 				StartMove(destination);
@@ -69,8 +69,8 @@ public class Unit : WorldObject
 	public void StartMove(Vector3 destination)
 	{
 		this.destination = destination;
-		targetRotation = Quaternion.LookRotation(destination - transform.position);
-		rotating = true;
+        targetRotation = Quaternion.LookRotation(destination - transform.position);
+        rotating = true;
 		moving = false;
 	}
 
@@ -95,6 +95,6 @@ public class Unit : WorldObject
         //controller.SimpleMove(destination *  Time.deltaTime * moveSpeed);
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * moveSpeed);
         if (transform.position == destination) moving = false;
-		CalculateBounds();
-	}
+        CalculateBounds();
+    }
 }
